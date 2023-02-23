@@ -30,10 +30,7 @@ try {
     },
   })
 } catch (err) {
-  // eslint-disable-next-line no-console
-  throw new Error(`Invalid config.
-- ${err.errors.join("\n- ")}
-`)
+  throw new Error(`Invalid config.- ${err.errors.join("\n- ")}`)
 }
 
 export default config
