@@ -1,6 +1,9 @@
 import cors from "cors"
+import knex from "knex"
 import express from "express"
 import morgan from "morgan"
+
+import BaseModel from "./db/models/BaseModel.js"
 
 const server = async (config) => {
   const app = express()
@@ -8,6 +11,9 @@ const server = async (config) => {
   app.use(cors())
   app.use(express.json())
   app.use(morgan("dev"))
+
+  const db = knex(config.db)
+  BaseModel.knex(db)
 
   app.use((req, res) => {
     res
