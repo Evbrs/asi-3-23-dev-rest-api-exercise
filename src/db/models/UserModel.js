@@ -9,6 +9,10 @@ class UserModel extends BaseModel {
       role: {
         modelClass: RoleModel,
         relation: BaseModel.BelongsToOneRelation,
+        join: {
+          from: "users.roleId",
+          to: "role.id",
+        },
       },
     }
   }
