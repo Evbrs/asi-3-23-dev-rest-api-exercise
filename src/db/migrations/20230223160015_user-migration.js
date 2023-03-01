@@ -4,8 +4,8 @@ export const up = async (knex) => {
     table.text("firstName").notNullable()
     table.text("lastName").notNullable()
     table.text("email").notNullable().unique()
-    table.text("password").notNullable()
-    table.text("jwtToken")
+    table.text("passwordHash")
+    table.text("passwordSalt")
     table.integer("roleId").notNullable().references("id").inTable("roles")
   })
 }
