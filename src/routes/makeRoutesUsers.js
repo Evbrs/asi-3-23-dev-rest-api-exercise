@@ -1,18 +1,23 @@
 import UserModel from "../db/models/UserModel.js"
-import { InvalidAccessError, NotFoundError } from "../errors.js"
 import mw from "../middlewares/mw.js"
 import validate from "../middlewares/validate.js"
+import auth from "../middlewares/auth.js"
 import { sanitizeUser } from "../sanitizers.js"
+import { InvalidAccessError, NotFoundError } from "../errors.js"
+import hashPassword from "../hashPassword.js"
 import {
   idValidator,
   nameValidator,
   emailValidator,
+  firstNameValidator,
+  lastNameValidator,
+  passwordValidator,
   queryLimitValidator,
   queryOffsetValidator,
 } from "../validators.js"
 import config from "../config.js"
 
-const makeRoutesUsers = ({ app }) => {
+const makeRoutesUsers = ({ app, db }) => {
   const checkIfUserExists = async (userId) => {
     const user = await UserModel.query().findById(userId)
 
@@ -25,6 +30,7 @@ const makeRoutesUsers = ({ app }) => {
 
   app.get(
     "/users",
+    auth({ resources: "users" }),
     validate({
       query: {
         limit: queryLimitValidator,
@@ -47,6 +53,7 @@ const makeRoutesUsers = ({ app }) => {
 
   app.get(
     "/users/:userId",
+    auth({ resources: "users" }),
     validate({
       params: { userId: idValidator.required() },
     }),
@@ -62,9 +69,38 @@ const makeRoutesUsers = ({ app }) => {
     })
   )
 
+  app.post(
+    "/create-user",
+    auth({ resources: "users" }),
+    validate({
+      body: {
+        firstName: firstNameValidator.required(),
+        lastName: lastNameValidator.required(),
+        email: emailValidator.required(),
+        password: passwordValidator.required(),
+      },
+    }),
+    mw(async (req, res) => {
+      const { firstName, lastName, email, password } = req.data.body
+      const [passwordHash, passwordSalt] = hashPassword(password)
+      const [user] = await db("users")
+        .insert({
+          firstName,
+          lastName,
+          email,
+          passwordHash,
+          passwordSalt,
+          roleId: 3,
+        })
+        .returning("*")
+
+      res.send({ result: sanitizeUser(user) })
+    })
+  )
+
   app.patch(
     "/users/:userId",
-    // auth,
+    auth({ resources: "users" }),
     validate({
       params: { userId: idValidator.required() },
       body: {
@@ -103,6 +139,7 @@ const makeRoutesUsers = ({ app }) => {
   )
   app.delete(
     "/users/:userId",
+    auth({ resources: "users" }),
     validate({
       params: { userId: idValidator.required() },
     }),

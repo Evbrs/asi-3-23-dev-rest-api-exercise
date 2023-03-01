@@ -17,7 +17,7 @@ const server = async (config) => {
   const db = knex(config.db)
   BaseModel.knex(db)
 
-  makeRoutesUsers({ app })
+  makeRoutesUsers({ app, db })
   makeRoutesSign({ app, db })
 
   app.use((req, res) => {

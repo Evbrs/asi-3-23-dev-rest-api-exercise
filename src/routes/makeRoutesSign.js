@@ -4,42 +4,10 @@ import { InvalidCredentialsError } from "../errors.js"
 import hashPassword from "../hashPassword.js"
 import mw from "../middlewares/mw.js"
 import validate from "../middlewares/validate.js"
-import { sanitizeUser } from "../sanitizers.js"
-import {
-  emailValidator,
-  firstNameValidator,
-  lastNameValidator,
-  passwordValidator,
-} from "../validators.js"
+
+import { emailValidator } from "../validators.js"
 
 const makeRoutesSign = ({ app, db }) => {
-  app.post(
-    "/sign-up",
-    validate({
-      body: {
-        firstName: firstNameValidator.required(),
-        lastName: lastNameValidator.required(),
-        email: emailValidator.required(),
-        password: passwordValidator.required(),
-      },
-    }),
-    mw(async (req, res) => {
-      const { firstName, lastName, email, password } = req.data.body
-      const [passwordHash, passwordSalt] = hashPassword(password)
-      const [user] = await db("users")
-        .insert({
-          firstName,
-          lastName,
-          email,
-          passwordHash,
-          passwordSalt,
-          roleId: 3,
-        })
-        .returning("*")
-
-      res.send({ result: sanitizeUser(user) })
-    })
-  )
   app.post(
     "/sign-in",
     validate({
