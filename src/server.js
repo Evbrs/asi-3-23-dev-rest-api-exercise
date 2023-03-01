@@ -3,6 +3,8 @@ import knex from "knex"
 import express from "express"
 import morgan from "morgan"
 
+import makeRoutesUsers from "./routes/makeRoutesUsers.js"
+import makeRoutesSign from "./routes/makeRoutesSign.js"
 import BaseModel from "./db/models/BaseModel.js"
 
 const server = async (config) => {
@@ -14,6 +16,9 @@ const server = async (config) => {
 
   const db = knex(config.db)
   BaseModel.knex(db)
+
+  makeRoutesUsers({ app })
+  makeRoutesSign({ app, db })
 
   app.use((req, res) => {
     res
