@@ -11,7 +11,7 @@ class UserModel extends BaseModel {
         relation: BaseModel.BelongsToOneRelation,
         join: {
           from: "users.roleId",
-          to: "role.id",
+          to: "roles.id",
         },
       },
     }
