@@ -10,6 +10,13 @@ const validationSchema = yup.object().shape({
       database: yup.string().min(1).required(),
     }),
   }),
+  security: yup.object().shape({
+    session: yup.object().shape({
+      jwt: yup.object().shape({
+        secret: yup.string().min(30).required(),
+      }),
+    }),
+  }),
 })
 
 let config = null
@@ -22,11 +29,38 @@ try {
       connection: {
         user: process.env.DB_CONNECTION_USER,
         database: process.env.DB_CONNECTION_DATABASE,
+        password: process.env.DB_PASSWORD,
       },
       migrations: {
         directory: resolve("./src/db/migrations"),
         stub: resolve("./src/db/migration.stub"),
       },
+    },
+    security: {
+      session: {
+        jwt: {
+          secret: process.env.SECURITY_SESSION_JWT_SECRET,
+          expiresIn: "1 day",
+        },
+        password: {
+          saltlen: 32,
+          iterations: 123943,
+          keylen: 256,
+          digest: "sha512",
+        },
+      },
+    },
+    pagination: {
+      limit: {
+        min: 1,
+        max: 100,
+        default: 10,
+      },
+      offset: {
+        min: 0,
+        max: 10,
+        default: 0
+      }
     },
   })
 } catch (err) {
