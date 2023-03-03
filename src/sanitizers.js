@@ -12,5 +12,5 @@ export const sanitizeUser = extract([
   "firstName",
   "lastName",
   "email",
-  "role",
+  "roleId",
 ])
