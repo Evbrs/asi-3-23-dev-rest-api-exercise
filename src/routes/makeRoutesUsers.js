@@ -16,6 +16,7 @@ import {
   queryOffsetValidator,
 } from "../validators.js"
 import config from "../config.js"
+import RoleModel from "../db/models/RoleModel.js"
 
 const makeRoutesUsers = ({ app, db }) => {
   const checkIfUserExists = async (userId) => {
@@ -53,16 +54,16 @@ const makeRoutesUsers = ({ app, db }) => {
 
   app.get(
     "/users/:userId",
-    auth({ resources: "users" }),
     validate({
       params: { userId: idValidator.required() },
     }),
+    auth({ resources: "users", canBeConsultedBySelf: true }),
     mw(async (req, res) => {
       const { userId } = req.data.params
       const user = await UserModel.query().findById(userId)
 
       if (!user) {
-        return
+        throw new NotFoundError()
       }
 
       res.send({ data: sanitizeUser(user) })
@@ -71,7 +72,6 @@ const makeRoutesUsers = ({ app, db }) => {
 
   app.post(
     "/create-user",
-    auth({ resources: "users" }),
     validate({
       body: {
         firstName: firstNameValidator.required(),
@@ -80,9 +80,20 @@ const makeRoutesUsers = ({ app, db }) => {
         password: passwordValidator.required(),
       },
     }),
+    auth({ resources: "users" }),
     mw(async (req, res) => {
-      const { firstName, lastName, email, password } = req.data.body
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        roleName = "editor",
+      } = req.data.body
       const [passwordHash, passwordSalt] = hashPassword(password)
+
+      const [role] = await RoleModel.query()
+        .select("id")
+        .where("name", roleName)
       const [user] = await db("users")
         .insert({
           firstName,
@@ -90,7 +101,7 @@ const makeRoutesUsers = ({ app, db }) => {
           email,
           passwordHash,
           passwordSalt,
-          roleId: 3,
+          roleId: parseInt(role.id),
         })
         .returning("*")
 
@@ -100,7 +111,7 @@ const makeRoutesUsers = ({ app, db }) => {
 
   app.patch(
     "/users/:userId",
-    auth({ resources: "users" }),
+    auth({ resources: "users", canBeConsultedBySelf: true }),
     validate({
       params: { userId: idValidator.required() },
       body: {
