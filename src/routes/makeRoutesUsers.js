@@ -41,13 +41,12 @@ const makeRoutesUsers = ({ app, db }) => {
     mw(async (req, res) => {
       const {
         limit = config.pagination.limit.default,
-        offset = config.pagination.limit.default,
+        offset = config.pagination.offset.default,
       } = req.data.query
       const users = await UserModel.query()
         .withGraphFetched("role")
         .limit(limit)
         .offset(offset)
-
       res.send({ data: sanitizeUser(users) })
     })
   )
@@ -125,13 +124,8 @@ const makeRoutesUsers = ({ app, db }) => {
         data: {
           body: { firstName, lastName, email },
           params: { userId },
-        },
-        session: { user: sessionUser },
+        }
       } = req
-
-      if (userId !== sessionUser.id) {
-        throw new InvalidAccessError()
-      }
 
       const user = await checkIfUserExists(userId, res)
 
