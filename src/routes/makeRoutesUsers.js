@@ -3,7 +3,7 @@ import mw from "../middlewares/mw.js"
 import validate from "../middlewares/validate.js"
 import auth from "../middlewares/auth.js"
 import { sanitizeUser } from "../sanitizers.js"
-import { InvalidAccessError, NotFoundError } from "../errors.js"
+import { NotFoundError } from "../errors.js"
 import hashPassword from "../hashPassword.js"
 import {
   idValidator,
@@ -93,6 +93,7 @@ const makeRoutesUsers = ({ app, db }) => {
       const [role] = await RoleModel.query()
         .select("id")
         .where("name", roleName)
+
       const [user] = await db("users")
         .insert({
           firstName,
