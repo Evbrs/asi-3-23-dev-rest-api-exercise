@@ -125,7 +125,7 @@ const makeRoutesUsers = ({ app, db }) => {
         data: {
           body: { firstName, lastName, email },
           params: { userId },
-        }
+        },
       } = req
 
       const user = await checkIfUserExists(userId, res)
