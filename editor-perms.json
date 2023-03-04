@@ -1,0 +1,20 @@
+{
+  "navigationMenu": {
+    "DELETE": false,
+    "GET": true,
+    "PATCH": false,
+    "POST": false
+  },
+  "pages": {
+    "DELETE": false,
+    "GET": true,
+    "PATCH": false,
+    "POST": false
+  },
+  "users": {
+    "DELETE": false,
+    "GET": false,
+    "PATCH": false,
+    "POST": false
+  }
+}

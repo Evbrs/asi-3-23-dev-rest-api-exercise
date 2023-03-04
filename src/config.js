@@ -59,8 +59,8 @@ try {
       offset: {
         min: 0,
         max: 10,
-        default: 0
-      }
+        default: 0,
+      },
     },
   })
 } catch (err) {
