@@ -12,5 +12,17 @@ export const sanitizeUser = extract([
   "firstName",
   "lastName",
   "email",
-  "roleId",
+  "role",
+])
+
+export const sanitizeNavigationMenu = extract(["id", "name", "pagesId"])
+
+export const sanitizePage = extract([
+  "id",
+  "title",
+  "content",
+  "creatorId",
+  "modifiersIds",
+  "publishedAt",
+  "published",
 ])

@@ -1,9 +1,13 @@
 import * as yup from "yup"
 import config from "./config.js"
 
+const regexLetter = /^[\p{L} -]+$/u
+
+const regexLetterNumberSpace = /^[a-zA-Z0-9\s]+/g
+
 export const nameValidator = yup
   .string()
-  .matches(/^[\p{L} -]+$/u, "Name is invalid")
+  .matches(regexLetter, "Name is invalid")
   .label("Name")
 
 export const firstNameValidator = nameValidator.label("First name")
@@ -40,3 +44,20 @@ export const queryOffsetValidator = yup
   .min(0)
   .default(0)
   .label("Query Offset")
+
+export const navigationMenuNameValidator = yup
+  .string()
+  .matches(
+    regexLetterNumberSpace,
+    "Name of navigation menu is invalid (only letters or -)"
+  )
+  .label("NavigationMenu Name")
+
+export const titleValidator = yup
+  .string()
+  .matches(regexLetterNumberSpace, "Title is invalid")
+  .label("Title")
+
+export const contentValidator = yup.string()
+
+export const pagesValidator = yup.array().of(yup.number().integer().min(1))
