@@ -5,7 +5,7 @@ export const up = async (knex) => {
       .enu("name", ["admin", "manager", "editor"])
       .notNullable()
       .defaultTo("editor")
-    table.text("permissions")
+    table.json("permissions")
   })
 
   await knex.schema.createTable("users", (table) => {
