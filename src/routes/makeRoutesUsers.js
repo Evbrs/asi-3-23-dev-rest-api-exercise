@@ -42,7 +42,7 @@ const makeRoutesUsers = ({ app, db }) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
-        sort = "id"
+        sort = "id",
       } = req.data.query
       const users = await UserModel.query()
         .withGraphFetched("role")

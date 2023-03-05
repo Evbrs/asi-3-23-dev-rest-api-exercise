@@ -38,7 +38,7 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
-        sort = "id"
+        sort = "id",
       } = req.data.query
 
       const navigationMenus = await NavigationMenuModel.query()
@@ -111,7 +111,7 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
       const navigationMenu = await checkIfNavigationMenuExists(navigationMenuId)
       const arrayWithNewPages = {
         ...navigationMenu.pages,
-        ...pages
+        ...pages,
       }
 
       if (!navigationMenu) {
