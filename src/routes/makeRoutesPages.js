@@ -37,10 +37,12 @@ const makeRoutesPages = ({ app, db }) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
+        sort = "id"
       } = req.data.query
 
       const pages = await PageModel.query()
         .where("published", false)
+        .orderBy(sort)
         .limit(limit)
         .offset(offset)
 
@@ -60,10 +62,12 @@ const makeRoutesPages = ({ app, db }) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
+        sort = "id"
       } = req.data.query
 
       const pages = await PageModel.query()
         .where("published", true)
+        .orderBy(sort)
         .limit(limit)
         .offset(offset)
 

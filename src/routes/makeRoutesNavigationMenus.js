@@ -38,9 +38,11 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
+        sort = "id"
       } = req.data.query
 
       const navigationMenus = await NavigationMenuModel.query()
+        .orderBy(sort)
         .limit(limit)
         .offset(offset)
 
@@ -106,11 +108,11 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
         },
       } = req
 
-      const navigationMenu = await checkIfNavigationMenuExists(
-        navigationMenuId,
-        res
-      )
-      const arrayWithNewPages = navigationMenu.pages.concat(pages)
+      const navigationMenu = await checkIfNavigationMenuExists(navigationMenuId)
+      const arrayWithNewPages = {
+        ...navigationMenu.pages,
+        ...pages
+      }
 
       if (!navigationMenu) {
         return
@@ -119,7 +121,7 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
       const updatedNavigationMenu =
         await NavigationMenuModel.query().updateAndFetchById(navigationMenuId, {
           ...(name ? { name } : {}),
-          ...(pages ? { pages: JSON.stringify(arrayWithNewPages) } : {}),
+          ...(pages ? { pages: arrayWithNewPages } : {}),
         })
 
       res.send({ data: sanitizeNavigationMenu(updatedNavigationMenu) })
@@ -134,10 +136,7 @@ const makeRoutesNavigationMenus = ({ app, db }) => {
     auth({ resources: "navigationMenu" }),
     mw(async (req, res) => {
       const { navigationMenuId } = req.data.params
-      const navigationMenu = await checkIfNavigationMenuExists(
-        navigationMenuId,
-        res
-      )
+      const navigationMenu = await checkIfNavigationMenuExists(navigationMenuId)
 
       if (!navigationMenu) {
         return

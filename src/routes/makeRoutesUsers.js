@@ -31,20 +31,22 @@ const makeRoutesUsers = ({ app, db }) => {
 
   app.get(
     "/users",
-    auth({ resources: "users" }),
     validate({
       query: {
         limit: queryLimitValidator,
         offset: queryOffsetValidator,
       },
     }),
+    auth({ resources: "users" }),
     mw(async (req, res) => {
       const {
         limit = config.pagination.limit.default,
         offset = config.pagination.offset.default,
+        sort = "id"
       } = req.data.query
       const users = await UserModel.query()
         .withGraphFetched("role")
+        .orderBy(sort)
         .limit(limit)
         .offset(offset)
 
@@ -112,7 +114,6 @@ const makeRoutesUsers = ({ app, db }) => {
 
   app.patch(
     "/users/:userId",
-    auth({ resources: "users", canBeConsultedBySelf: true }),
     validate({
       params: { userId: idValidator.required() },
       body: {
@@ -121,6 +122,7 @@ const makeRoutesUsers = ({ app, db }) => {
         email: emailValidator,
       },
     }),
+    auth({ resources: "users", canBeConsultedBySelf: true }),
     mw(async (req, res) => {
       const {
         data: {
