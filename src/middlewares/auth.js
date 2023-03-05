@@ -26,7 +26,7 @@ const auth = (perms) =>
         .findById(payload.user.id)
         .withGraphFetched("role")
 
-      const permissions = JSON.parse(user.role.permissions)
+      const permissions = user && user.role && user.role.permissions
 
       if (permissions[resources][method]) {
         next()

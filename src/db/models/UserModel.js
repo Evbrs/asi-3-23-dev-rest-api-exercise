@@ -3,12 +3,11 @@ import RoleModel from "./RoleModel.js"
 
 class UserModel extends BaseModel {
   static tableName = "users"
-
   static get relationMappings() {
     return {
       role: {
-        modelClass: RoleModel,
         relation: BaseModel.BelongsToOneRelation,
+        modelClass: RoleModel,
         join: {
           from: "users.roleId",
           to: "roles.id",

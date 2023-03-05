@@ -5,7 +5,9 @@ import morgan from "morgan"
 
 import makeRoutesUsers from "./routes/makeRoutesUsers.js"
 import makeRoutesSign from "./routes/makeRoutesSign.js"
+import makeRoutesNavigationMenus from "./routes/makeRoutesNavigationMenus.js"
 import BaseModel from "./db/models/BaseModel.js"
+import makeRoutesPages from "./routes/makeRoutesPages.js"
 
 const server = async (config) => {
   const app = express()
@@ -19,6 +21,8 @@ const server = async (config) => {
 
   makeRoutesUsers({ app, db })
   makeRoutesSign({ app, db })
+  makeRoutesNavigationMenus({ app, db })
+  makeRoutesPages({ app, db })
 
   app.use((req, res) => {
     res
