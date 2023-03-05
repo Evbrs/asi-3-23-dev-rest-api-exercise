@@ -47,6 +47,7 @@ const makeRoutesUsers = ({ app, db }) => {
         .withGraphFetched("role")
         .limit(limit)
         .offset(offset)
+
       res.send({ data: sanitizeUser(users) })
     })
   )
@@ -143,12 +144,13 @@ const makeRoutesUsers = ({ app, db }) => {
       res.send({ data: sanitizeUser(updatedUser) })
     })
   )
+
   app.delete(
     "/users/:userId",
-    auth({ resources: "users" }),
     validate({
       params: { userId: idValidator.required() },
     }),
+    auth({ resources: "users" }),
     mw(async (req, res) => {
       const { userId } = req.data.params
       const user = await checkIfUserExists(userId, res)
